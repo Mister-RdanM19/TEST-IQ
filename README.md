@@ -37,6 +37,7 @@ Dirancang dengan **mode CERDAS**, tampilan modern, dan fitur statistik lengkap.
 ```text
 index.html
 README.md
+## ESTIMASI CERDAS
 
 | Jawaban Benar | Estimasi IQ |
 | ------------- | ----------- |
@@ -48,7 +49,7 @@ README.md
 
 
 
-🔧 Teknologi yang Digunakan
+## Teknologi yang Digunakan
 
 HTML5
 
@@ -59,6 +60,6 @@ JavaScript (Vanilla JS)
 Canvas API (untuk grafik)
 
 
-👤 Author
+## 👤 Author
 
 Dikembangkan oleh: Mr.Rm19 
