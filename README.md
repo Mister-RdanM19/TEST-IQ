@@ -4,7 +4,8 @@ Aplikasi **Tes IQ berbasis website** menggunakan **HTML, CSS, dan JavaScript** t
 Dirancang dengan **mode CERDAS**, tampilan modern, dan fitur statistik lengkap.
 
 > ⚠️ Catatan:  
-> ini di buat oleh Mr.Rm19 - ramdan19id@gmail.com 
+> ini di buat oleh Mr.Rm19 - ramdan19id@gmail.com
+> LIVE WEB : https://mister-rdanm19.github.io/TEST-IQ/
 
 ---
 
@@ -30,13 +31,6 @@ Dirancang dengan **mode CERDAS**, tampilan modern, dan fitur statistik lengkap.
 - 📱 **Mobile-friendly (Responsive)**
 - 🚀 **Tanpa library eksternal (Pure HTML, CSS, JS)**
 
----
-
-## 📂 Struktur File
-
-```text
-index.html
-README.md
 ## ESTIMASI CERDAS
 
 | Jawaban Benar | Estimasi IQ |
@@ -63,3 +57,11 @@ Canvas API (untuk grafik)
 ## 👤 Author
 
 Dikembangkan oleh: Mr.Rm19 
+
+---
+
+## 📂 Struktur File
+
+```text
+index.html
+README.md
