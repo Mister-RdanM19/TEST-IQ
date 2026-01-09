@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes IQ </title>
+
+<style>
+:root{
+--bg:#0f172a;--card:#1e293b;--text:#e5e7eb;
+--accent:#38bdf8;--border:#334155;
+--green:#22c55e;--red:#ef4444;--yellow:#eab308;
+}
+.light{
+--bg:#f1f5f9;--card:#ffffff;--text:#020617;
+--accent:#2563eb;--border:#cbd5f5;
+}
+body{
+margin:0;font-family:Segoe UI,sans-serif;
+background:var(--bg);color:var(--text);
+}
+.container{max-width:1000px;margin:auto;padding:20px;}
+.card{background:var(--card);padding:20px;border-radius:16px;}
+header{display:flex;justify-content:space-between;align-items:center;}
+.toggle{cursor:pointer;padding:6px 12px;border-radius:8px;background:var(--accent);color:#000;}
+.timer{text-align:center;font-size:20px;margin:15px 0;}
+.warning{
+background:#7c2d12;color:#fff;padding:15px;
+border-radius:10px;margin-bottom:15px;
+}
+.question{margin-bottom:22px;}
+.options label{
+display:block;padding:10px;margin-bottom:8px;
+border:1px solid var(--border);
+border-radius:8px;cursor:pointer;
+}
+button{
+width:100%;padding:14px;margin-top:10px;
+border:none;border-radius:10px;
+background:var(--accent);font-size:16px;font-weight:bold;
+cursor:pointer;
+}
+canvas{display:block;margin:30px auto;max-width:450px;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<header>
+<h2>📝 Tes IQ – Mode KECERDASAN by Mr.Rm19 - N3i</h2><br>
+
+<div class="toggle" onclick="toggleMode()">🌗 Mode</div>
+</header>
+
+<div class="warning">
+<b>⚠️ PERATURAN TEST</b>
+<ul>
+<li>50 soal – waktu 15 menit</li>
+<li>Hanya bisa dikirim satu kali</li>
+<li>Hasil bersifat REAL </li>
+</ul>
+</div>
+
+<div class="timer" id="timer">⏱️ 15:00</div>
+
+<form id="quiz"></form>
+
+<button id="submitBtn" onclick="finish()">📤 Kirim Jawaban</button>
+
+<div id="result"></div>
+<canvas id="chart" width="450" height="300"></canvas>
+
+</div>
+</div>
+
+<script>
+/* ================== BANK SOAL IQ 50 ================== */
+const questions = [
+{q:"1. 2, 4, 8, 16, ...?",a:["18","24","32","64"],c:2},
+{q:"2. 1, 4, 9, 16, ...?",a:["20","24","25","36"],c:2},
+{q:"3. 3, 6, 12, 24, ...?",a:["36","48","60","72"],c:1},
+{q:"4. 5 × (3 + 2) = ?",a:["10","20","25","30"],c:2},
+{q:"5. 7, 14, 21, ...?",a:["27","28","35","42"],c:1},
+{q:"6. 10, 20, 40, ...?",a:["60","70","80","100"],c:2},
+{q:"7. 4, 9, 14, 19, ...?",a:["22","24","25","29"],c:2},
+{q:"8. 2² + 3² = ?",a:["13","14","25","9"],c:0},
+{q:"9. 6² = ?",a:["12","18","36","42"],c:2},
+{q:"10. 100 ÷ (5 × 4) = ?",a:["5","4","20","25"],c:0},
+
+{q:"11. Hari ini Senin, 17 hari lagi?",a:["Rabu","Kamis","Jumat","Sabtu"],c:2},
+{q:"12. Semua burung bisa terbang. Elang adalah burung. Maka…",a:["Elang tidak terbang","Elang bisa terbang","Elang mamalia","Tidak pasti"],c:1},
+{q:"13. Lawan kata ‘optimis’?",a:["Senang","Percaya","Pesimis","Takut"],c:2},
+{q:"14. Sinonim ‘cerdas’?",a:["Bodoh","Pandai","Malas","Lamban"],c:1},
+{q:"15. Apel, mangga, jeruk, …?",a:["Pisang","Anggur","Pir","Wortel"],c:3},
+{q:"16. Jika A > B dan B > C, maka…",a:["C > A","A > C","B > A","Tidak pasti"],c:1},
+{q:"17. Semua X adalah Y. Kesimpulan benar?",a:["Y pasti X","X pasti Y","X bukan Y","Tidak ada hubungan"],c:1},
+{q:"18. 3³ = ?",a:["6","9","27","81"],c:2},
+{q:"19. 81, 27, 9, ...?",a:["6","3","1","0"],c:1},
+{q:"20. 1, 1, 2, 3, 5, ...?",a:["6","7","8","9"],c:2},
+
+{q:"21. 12, 24, 36, ...?",a:["48","52","54","60"],c:0},
+{q:"22. 2, 6, 18, ...?",a:["24","36","48","54"],c:1},
+{q:"23. 5, 10, 20, ...?",a:["25","30","35","40"],c:3},
+{q:"24. 9² = ?",a:["18","72","81","99"],c:2},
+{q:"25. 15% dari 200 = ?",a:["15","20","25","30"],c:3},
+{q:"26. 7 + (6 × 5) = ?",a:["65","37","42","30"],c:1},
+{q:"27. Jika hari ini Jumat, 100 hari lagi?",a:["Minggu","Senin","Selasa","Rabu"],c:2},
+{q:"28. Semua dokter adalah sarjana. Maka…",a:["Semua sarjana dokter","Dokter pasti sarjana","Sarjana pasti dokter","Tidak ada hubungan"],c:1},
+{q:"29. Kata tidak sejenis?",a:["Merah","Biru","Hijau","Panjang"],c:3},
+{q:"30. Sinonim ‘cepat’?",a:["Lambat","Lekas","Tenang","Berat"],c:1},
+
+{q:"31. 8, 16, 32, ...?",a:["40","48","56","64"],c:3},
+{q:"32. 2, 3, 5, 7, ...?",a:["9","10","11","13"],c:2},
+{q:"33. 1000 ÷ 25 = ?",a:["20","25","40","50"],c:2},
+{q:"34. Jika semua A adalah B, dan semua B adalah C…",a:["A mungkin C","A pasti C","C pasti A","Tidak pasti"],c:1},
+{q:"35. 11, 22, 33, ...?",a:["44","55","66","77"],c:0},
+{q:"36. 1/2 + 1/4 = ?",a:["1/4","1/2","3/4","1"],c:2},
+{q:"37. Lawan kata ‘abstrak’?",a:["Nyata","Kabur","Rumit","Samar"],c:0},
+{q:"38. 14, 28, 56, ...?",a:["70","84","112","120"],c:2},
+{q:"39. Jika 5 orang menyelesaikan pekerjaan dalam 10 hari, 10 orang butuh…",a:["2 hari","5 hari","10 hari","20 hari"],c:1},
+{q:"40. 3, 9, 27, ...?",a:["36","54","81","90"],c:2},
+
+{q:"41. 121 = ?",a:["11²","12²","13²","14²"],c:0},
+{q:"42. 4³ = ?",a:["12","16","32","64"],c:3},
+{q:"43. Jika A = 1, B = 2, C = 3, maka D = ?",a:["3","4","5","6"],c:1},
+{q:"44. 90% dari 50 = ?",a:["5","25","45","50"],c:2},
+{q:"45. Semua kucing hewan. Kesimpulan benar?",a:["Semua hewan kucing","Kucing bukan hewan","Kucing adalah hewan","Tidak pasti"],c:2},
+{q:"46. 1, 8, 27, ...?",a:["36","64","81","125"],c:3},
+{q:"47. 49 = ?",a:["6²","7²","8²","9²"],c:1},
+{q:"48. Jika hari ini Minggu, 3 hari lalu?",a:["Rabu","Kamis","Jumat","Sabtu"],c:3},
+{q:"49. 25% dari 80 = ?",a:["10","15","20","25"],c:2},
+{q:"50. Sinonim ‘logis’?",a:["Aneh","Masuk akal","Kabur","Kacau"],c:1}
+];
+
+/* ================== RENDER SOAL ================== */
+const quiz = document.getElementById("quiz");
+questions.forEach((q,i)=>{
+let d=document.createElement("div");
+d.className="question";
+d.innerHTML=`<p><b>${q.q}</b></p>`;
+q.a.forEach((o,j)=>{
+d.innerHTML+=`
+<div class="options">
+<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>
+</div>`;
+});
+quiz.appendChild(d);
+});
+
+/* ================== TIMER 15 MENIT ================== */
+let time=900, finished=false;
+const tEl=document.getElementById("timer");
+const interval=setInterval(()=>{
+let m=Math.floor(time/60), s=time%60;
+tEl.innerText=`⏱️ ${m}:${s.toString().padStart(2,"0")}`;
+if(time--<=0){clearInterval(interval);finish();}
+},1000);
+
+/* ================== HITUNG HASIL ================== */
+function finish(){
+if(finished) return;
+finished=true;
+clearInterval(interval);
+document.getElementById("submitBtn").disabled=true;
+
+let correct=0, wrong=0, empty=0;
+questions.forEach((q,i)=>{
+let a=document.querySelector(`input[name=q${i}]:checked`);
+if(!a) empty++;
+else if(+a.value===q.c) correct++;
+else wrong++;
+});
+
+let accuracy=Math.round((correct/questions.length)*100);
+let iq =
+correct<=15?"IQ < 85":
+correct<=25?"IQ 85–99":
+correct<=35?"IQ 100–114":
+correct<=45?"IQ 115–129":"IQ ≥ 130";
+
+document.getElementById("result").innerHTML=`
+<h3>📊 Hasil TEST</h3>
+<p>Benar: <b>${correct}</b></p>
+<p>Salah: <b>${wrong}</b></p>
+<p>Tidak dijawab: <b>${empty}</b></p>
+<p>Akurasi: <b>${accuracy}%</b></p>
+<p>Estimasi IQ: <b>${iq}</b></p>
+<p>Status: <b>${accuracy>=60?"CERDAS":"TIDAK CERDAS"}</b></p>
+`;
+
+drawBar(correct,wrong,empty);
+}
+
+/* ================== GRAFIK BATANG ================== */
+function drawBar(c,w,e){
+const ctx=document.getElementById("chart").getContext("2d");
+ctx.clearRect(0,0,450,300);
+const data=[c,w,e];
+const colors=["#22c55e","#ef4444","#eab308"];
+const labels=["Benar","Salah","Kosong"];
+
+data.forEach((v,i)=>{
+ctx.fillStyle=colors[i];
+ctx.fillRect(90+i*110,260-v*4,60,v*4);
+ctx.fillText(labels[i],95+i*110,280);
+});
+}
+
+/* ================== MODE ================== */
+function toggleMode(){
+document.body.classList.toggle("light");
+}
+</script>
+
+</body>
+</html>
